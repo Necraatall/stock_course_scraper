@@ -1,4 +1,34 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# https://taskfile.dev
+version: "3"
+
 tasks:
+  setup:
+    summary: Sets up Taskfile auto-completion
+    desc: |
+      This task performs the following steps to set up auto-completion for Taskfile:
+      1. Downloads the bash auto-completion script for Taskfile.
+      2. Adds the current user to the sudoers file to allow moving the script without a password.
+      3. Moves the downloaded script to the bash-completion directory.
+      4. Adds a line to the .bashrc file to source the auto-completion script on shell startup.
+    cmds:
+      - curl -LO https://raw.githubusercontent.com/go-task/task/main/completion/bash/task.bash
+      - 'echo "{{.USER}} ALL=(ALL:ALL) NOPASSWD: /usr/bin/mv" | sudo tee /etc/sudoers.d/{{.USER}}'
+      - sudo mv task.bash /usr/share/bash-completion/completions/
+      - echo 'source /usr/share/bash-completion/completions/task' >> ~/.bashrc
+
+  install-poetry:
+    summary: Installs Poetry package manager
+    desc: |
+      This task performs the following steps to install Poetry package manager:
+      1. Downloads the installation script for Poetry.
+      2. Executes the installation script.
+    cmds:
+      - pip install poetry
+      - poetry install
+      - pip install --upgrade poetry
+      - poetry update
+
   install-trivy:
     summary: Installs Trivy vulnerability scanner
     desc: |
