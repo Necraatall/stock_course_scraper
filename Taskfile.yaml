@@ -2,6 +2,8 @@
 # https://taskfile.dev
 version: "3"
 
+# TODO: dodelat vars a images
+
 tasks:
   setup:
     summary: Sets up Taskfile auto-completion
@@ -12,6 +14,8 @@ tasks:
       3. Moves the downloaded script to the bash-completion directory.
       4. Adds a line to the .bashrc file to source the auto-completion script on shell startup.
     cmds:
+      - curl -sL https://taskfile.dev/install.sh | sh
+      - export PATH="$PATH:./bin"
       - curl -LO https://raw.githubusercontent.com/go-task/task/main/completion/bash/task.bash
       - 'echo "{{.USER}} ALL=(ALL:ALL) NOPASSWD: /usr/bin/mv" | sudo tee /etc/sudoers.d/{{.USER}}'
       - sudo mv task.bash /usr/share/bash-completion/completions/
@@ -19,6 +23,8 @@ tasks:
 
   install-poetry:
     summary: Installs Poetry package manager
+    deps:
+      - setup
     desc: |
       This task performs the following steps to install Poetry package manager:
       1. Downloads the installation script for Poetry.
