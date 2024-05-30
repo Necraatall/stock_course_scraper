@@ -1,0 +1,16 @@
+tasks:
+  install-trivy:
+    summary: Installs Trivy vulnerability scanner
+    desc: |
+      This task performs the following steps to install Trivy vulnerability scanner:
+      1. Installs necessary packages (wget, apt-transport-https, gnupg).
+      2. Downloads and stores the public key for the Trivy repository.
+      3. Adds the Trivy repository to the APT sources list.
+      4. Updates the list of available packages.
+      5. Installs Trivy.
+    cmds:
+      - sudo apt-get install wget apt-transport-https gnupg
+      - wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+      - echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+      - sudo apt-get update
+      - sudo apt-get install trivy
