@@ -2,13 +2,13 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml poetry.lock Taskfile.yaml ./
+ENV PATH="$PATH:./bin"
 
-# Install curl and Taskfile
+# Install curl, Task, dependencies, poetry and trivy
 RUN apt-get update && \
-    apt-get install -y curl && \
+    apt-get install -y curl sudo && \
     curl -sL https://taskfile.dev/install.sh | sh && \
-    export PATH="$PATH:./bin" && \
     task install-poetry && \
     task install-trivy
 
