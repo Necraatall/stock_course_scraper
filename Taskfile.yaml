@@ -2,8 +2,6 @@
 # https://taskfile.dev
 version: "3"
 
-# TODO: dodelat trivy
-# TODO: dodelat vars a images, .env ci nacitani properties z gitu
 vars:
   IMAGE_NAME: "buildime"
 
@@ -28,7 +26,6 @@ tasks:
       - curl -sL https://taskfile.dev/install.sh | sh
       - export PATH="$PATH:./bin"
       - curl -LO https://raw.githubusercontent.com/go-task/task/main/completion/bash/task.bash
-      - USER=$(cat {{.USER_FILE}}) && echo "############################## $USER"
       - echo 'USER=$(cat {{.USER_FILE}}) && $USER ALL=(ALL:ALL) NOPASSWD:'' /usr/bin/mv' | echo 'sudo tee /etc/sudoers.d/$USER'
       - mv task.bash /usr/share/bash-completion/completions/
       - echo 'source /usr/share/bash-completion/completions/task' >> ~/.bashrc
@@ -43,8 +40,16 @@ tasks:
       2. Executes the installation script.
     cmds:
       - pip install poetry
-      - poetry install
       - pip install --upgrade poetry
+
+  install-dependencies:
+    summary: Installs project dependencies
+    deps:
+      - install-poetry
+    cmds:
+      - poetry lock
+      - poetry shell
+      - poetry install
       - poetry update
 
   install-trivy:
@@ -77,4 +82,4 @@ tasks:
       This task performs the following steps to scan a Docker image using Trivy:
       1. Runs Trivy against the specified Docker image.
     cmds:
-      - trivy image {{.IMAGE_NAME}}
+      - trivy image --severity HIGH,CRITICAL --ignore-unfixed {{.IMAGE_NAME}}
